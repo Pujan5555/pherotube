@@ -106,10 +106,21 @@ const LoadVideos = async () => {
         console.error("Error:", error);
     }
 };
+async function showVideoDetails(id) {
+    const response = await fetch(`https://openapi.programming-hero.com/api/phero-tube/video/${id}`);
+    const data = await response.json();
+    console.log(data.video.video_id);
+    const modalContent = document.getElementById("modalcontent");
+    modalContent.innerHTML = `<img src="${data.video.thumbnail}" alt="videosOfPhero" class="h-full w-full object-cover"/>
+    <p class="text-md my-2">${data.video.description}</p>`;
+    const modalbtn = document.getElementById("modalButton");
+    modalbtn.click();
+}
 const displayVideos = (videos) => {
     videos.forEach((video) => {
         let card = document.createElement("div");
-        card.classList.add("card", "bg-base-100");
+        card.classList.add("card", "bg-base-100", "cursor-pointer");
+        card.setAttribute("onclick", "showVideoDetails('"+video.video_id+"')");
         card.innerHTML = `
         <figure class="h-[200px] relative">
             <img src="${video.thumbnail}" alt="Shoes" class="h-full w-full object-cover"/>

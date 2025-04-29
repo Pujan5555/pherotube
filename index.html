@@ -12,7 +12,7 @@
 </head>
 
 <body>
-    <nav class="flex items-center justify-between w-[95%] mx-auto py-6 border-b-2 border-gray-300"> 
+    <nav class="flex items-center justify-between w-[95%] mx-auto py-6 border-b-2 border-gray-300">
         <img src="Logo.png" alt="phtube" class="">
         <div class="flex items-center p-0">
             <label class="input outline-none border-2 border-gray-300 rounded-md">
@@ -28,7 +28,7 @@
         </div>
         <div>
             <button class="px-2 py-3 bg-slate-400 cursor-pointer rounded-md text-white font-semibold">
-                SORT
+                SORt
             </button>
         </div>
     </nav>
@@ -39,6 +39,19 @@
     <section class="w-[95%] mx-auto grid grid-cols-4 gap-4" id="videos">
 
     </section>
+    <!-- Open the modal using ID.showModal() method -->
+    <button class="btn hidden" id="modalButton" onclick="modal.showModal()">open modal</button>
+    <dialog id="modal" class="modal modal-bottom sm:modal-middle">
+        <div class="modal-box">
+            <div id="modalcontent"></div>
+            <div class="modal-action">
+                <form method="dialog">
+                    <!-- if there is a button in form, it will close the modal -->
+                    <button class="btn">Close</button>
+                </form>
+            </div>
+        </div>
+    </dialog>
     <script src="script.js"></script>
 </body>
 
