@@ -13,7 +13,7 @@
 
 <body>
     <nav class="flex items-center justify-between w-[95%] mx-auto py-6 border-b-2 border-gray-300">
-        <img src="Logo.png" alt="phtube" class="">
+        <img src="Logo.png" alt="phtube" class="logo">
         <div class="flex items-center p-0">
             <label class="input outline-none border-2 border-gray-300 rounded-md">
                 <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -23,12 +23,12 @@
                         <path d="m21 21-4.3-4.3"></path>
                     </g>
                 </svg>
-                <input type="search" required placeholder="Search" />
+                <input id="searchText" type="search" required placeholder="Search" />
             </label>
         </div>
         <div>
-            <button class="px-2 py-3 bg-slate-400 cursor-pointer rounded-md text-white font-semibold">
-                SORt
+            <button id="sort" class="px-2 py-3 bg-slate-400 cursor-pointer rounded-md text-white font-semibold">
+                SORT
             </button>
         </div>
     </nav>

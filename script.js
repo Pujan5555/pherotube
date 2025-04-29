@@ -1,6 +1,7 @@
 // global variables
 const videoCategory = document.getElementById("Video_categories");
 const videoContainer = document.getElementById("videos");
+const sort = document.getElementById("sort");
 // global variables
 const time = (time) => {
     const hours = parseInt(time / 3600);
@@ -41,6 +42,28 @@ const DisplayCategories = (data) => {
     data.forEach((item) => {
         videoArray.push(item.category_id);
     });
+    const all = document.createElement("button");
+    all.classList.add(
+        "btn",
+        "btn-outline-primary",
+        "m-2",
+        "rounded-md",
+        "text-center",
+        "bg-slate-200",
+        "hover:bg-[rgb(255,0,0)]",
+        "hover:text-white",
+        "hover:font-bold",
+        "px-4",
+        "py-2"
+    );
+    all.innerText = "All";
+    videoCategory.appendChild(all);
+    all.addEventListener("click", () => {
+        videoContainer.innerHTML = "";
+        all.classList.remove("bg-slate-200");
+        all.classList.add("active");
+        LoadVideos();
+    });
     data.forEach((element) => {
         const button = document.createElement("button");
         button.classList.add(
@@ -59,14 +82,14 @@ const DisplayCategories = (data) => {
         button.innerText = element.category;
         videoCategory.appendChild(button);
     });
-    for (let i = 0; i < videoArray.length; i++) {
-        videoCategory.children[i].addEventListener("click", () => {
+    for (let i = 0; i <= videoArray.length; i++) {
+        videoCategory.children[i+1].addEventListener("click", () => {
             videoContainer.innerHTML = "";
-            videoCategory.children[i].classList.remove("bg-slate-200");
-            for(let item of videoCategory.children){
+            videoCategory.children[i+1].classList.remove("bg-slate-200");
+            for (let item of videoCategory.children) {
                 item.classList.remove("active");
             }
-            videoCategory.children[i].classList.add("active");
+            videoCategory.children[i+1].classList.add("active");
             const clickFunc = async () => {
                 try {
                     let res = await fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${videoArray[i]}`);
@@ -80,7 +103,7 @@ const DisplayCategories = (data) => {
                         videoContainer.innerHTML = `
                         <img src="Icon.png" alt="verified" class="w-30 h-25 mx-auto"/>
                         <h1 class="text-3xl font-bold text-center">Oops!! There is <br> no content here</h1>`;
-                    }else{
+                    } else {
                         videoContainer.classList.remove("h-screen", "flex", "flex-col", "items-center", "justify-center");
                         videoContainer.classList.add("grid");
                     }
@@ -94,10 +117,10 @@ const DisplayCategories = (data) => {
 };
 LoadCategories();
 // vidoes
-const LoadVideos = async () => {
+const LoadVideos = async (searchText = "") => {
     try {
         const video_response = await fetch(
-            "https://openapi.programming-hero.com/api/phero-tube/videos"
+            `https://openapi.programming-hero.com/api/phero-tube/videos?title=${searchText}`
         );
         const video_data = await video_response.json();
         const videos = video_data.videos;
@@ -106,10 +129,15 @@ const LoadVideos = async () => {
         console.error("Error:", error);
     }
 };
+const searchInput = document.getElementById("searchText");
+searchInput.addEventListener("input", (e) => { //input eventlistener works when i cross the input
+    console.log(e.target.value);
+    videoContainer.innerHTML = "";
+    LoadVideos(e.target.value);
+});
 async function showVideoDetails(id) {
     const response = await fetch(`https://openapi.programming-hero.com/api/phero-tube/video/${id}`);
     const data = await response.json();
-    console.log(data.video.video_id);
     const modalContent = document.getElementById("modalcontent");
     modalContent.innerHTML = `<img src="${data.video.thumbnail}" alt="videosOfPhero" class="h-full w-full object-cover"/>
     <p class="text-md my-2">${data.video.description}</p>`;
@@ -120,7 +148,7 @@ const displayVideos = (videos) => {
     videos.forEach((video) => {
         let card = document.createElement("div");
         card.classList.add("card", "bg-base-100", "cursor-pointer");
-        card.setAttribute("onclick", "showVideoDetails('"+video.video_id+"')");
+        card.setAttribute("onclick", "showVideoDetails('" + video.video_id + "')");
         card.innerHTML = `
         <figure class="h-[200px] relative">
             <img src="${video.thumbnail}" alt="Shoes" class="h-full w-full object-cover"/>
@@ -145,3 +173,66 @@ const displayVideos = (videos) => {
 };
 
 LoadVideos();
+
+// sort videos
+const sortVideos = async (id) => {
+    try {
+        const video_response = await fetch(
+            `https://openapi.programming-hero.com/api/phero-tube/video/${id}`
+        );
+        const video_data = await video_response.json();
+        const video = video_data.video;
+        sorting(video);
+    } catch (error) {
+        console.error("Error:", error);
+    }
+};
+
+const sorting = (video) => {
+        let card = document.createElement("div");
+        card.classList.add("card", "bg-base-100", "cursor-pointer");
+        card.setAttribute("onclick", "showVideoDetails('" + video.video_id + "')");
+        card.innerHTML = `
+        <figure class="h-[200px] relative">
+            <img src="${video.thumbnail}" alt="Shoes" class="h-full w-full object-cover"/>
+            ${video.others.posted_date.length === 0 ? "" : `<span class="absolute right-2 bottom-2 bg-black text-white text-sm rounded-md px-3 py-2">${time(video.others.posted_date)}</span>`}
+        </figure>
+        <div class="px-0 py-4 flex items-start gap-4">
+            <div class="">
+                <img src="${video.authors[0].profile_picture}" alt="Shoes" class="w-10 h-10 rounded-full"/>
+            </div>
+            <div class="">
+                <h2 class="text-lg font-semibold">${video.title}</h2>
+                <p class="text-md text-gray-500 flex items-center gap-0">
+                    ${video.authors[0].profile_name}
+                    ${video.authors[0].verified === true ? `<img src="https://img.icons8.com/?size=100&id=2AuMnRFVB9b1&format=png&color=000000" alt="verified" class="w-6 h-6"/>` : ""}
+                </p>
+                <p class="text-md text-gray-500">${video.others.views} views</p>
+            </div>
+        </div>
+        </div>`;
+        videoContainer.appendChild(card);
+};
+sort.addEventListener("click", async () => {
+    const response = await fetch('https://openapi.programming-hero.com/api/phero-tube/videos');
+    const data = await response.json();
+    const videos = data.videos;
+    const sortList = [];
+    const sortId = [];
+    const sortObj = {};
+    videoContainer.innerHTML = "";
+    videos.forEach((video) => {
+        sortList.push(parseFloat((video.others.views).split("K")[0]));
+        sortId.push(video.video_id);
+    });
+    for (let i = 0; i < sortId.length; i++) {
+        sortObj[sortId[i]] = sortList[i];
+    }
+    const sortedValues = Object.values(sortObj).sort((a, b) => b - a);
+    // const sortedKeys = [];
+    // console.log(sortList.indexOf(sortedValues[0]));
+    for (let i = 0; i < sortedValues.length; i++) {
+        let id = Object.keys(sortObj).find(key => sortObj[key] === sortedValues[i]);
+        sortVideos(id);
+    }
+});
