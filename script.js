@@ -38,7 +38,7 @@ const LoadCategories = async () => {
     }
 };
 const DisplayCategories = (data) => {
-    const videoArray = [];
+    const videoArray = [2];
     data.forEach((item) => {
         videoArray.push(item.category_id);
     });
@@ -82,30 +82,29 @@ const DisplayCategories = (data) => {
         button.innerText = element.category;
         videoCategory.appendChild(button);
     });
-    for (let i = 0; i <= videoArray.length; i++) {
-        videoCategory.children[i+1].addEventListener("click", () => {
+    for (let i = 1; i <= videoArray.length; i++) {
+        videoCategory.children[i].addEventListener("click", () => {
             videoContainer.innerHTML = "";
-            videoCategory.children[i+1].classList.remove("bg-slate-200");
+            videoCategory.children[i].classList.remove("bg-slate-200");
             for (let item of videoCategory.children) {
                 item.classList.remove("active");
             }
-            videoCategory.children[i+1].classList.add("active");
+            videoCategory.children[i].classList.add("active");
             const clickFunc = async () => {
                 try {
                     let res = await fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${videoArray[i]}`);
                     let data = await res.json();
                     let categoryOfVideo = data.category;
-                    console.log(data.category);
                     displayVideos(categoryOfVideo);
                     if (videoContainer.children.length === 0) {
-                        videoContainer.classList.remove("grid");
-                        videoContainer.classList.add("h-screen", "flex", "flex-col", "items-center", "justify-center");
+                        videoContainer.classList.remove("grid", "grid-cols-4", "gap-4");
+                        videoContainer.classList.add("flex", "flex-col", "items-center", "justify-center");
                         videoContainer.innerHTML = `
                         <img src="Icon.png" alt="verified" class="w-30 h-25 mx-auto"/>
-                        <h1 class="text-3xl font-bold text-center">Oops!! There is <br> no content here</h1>`;
-                    } else {
-                        videoContainer.classList.remove("h-screen", "flex", "flex-col", "items-center", "justify-center");
-                        videoContainer.classList.add("grid");
+                        <h1 class="text-3xl font-bold mx-auto">Oops!! There is <br> no content here</h1>`;
+                    }else{
+                        videoContainer.classList.remove("flex", "flex-col", "items-center", "justify-center");
+                        videoContainer.classList.add("grid", "grid-cols-4", "gap-4");
                     }
                 } catch (error) {
                     console.error("Error:", error);
@@ -189,10 +188,10 @@ const sortVideos = async (id) => {
 };
 
 const sorting = (video) => {
-        let card = document.createElement("div");
-        card.classList.add("card", "bg-base-100", "cursor-pointer");
-        card.setAttribute("onclick", "showVideoDetails('" + video.video_id + "')");
-        card.innerHTML = `
+    let card = document.createElement("div");
+    card.classList.add("card", "bg-base-100", "cursor-pointer");
+    card.setAttribute("onclick", "showVideoDetails('" + video.video_id + "')");
+    card.innerHTML = `
         <figure class="h-[200px] relative">
             <img src="${video.thumbnail}" alt="Shoes" class="h-full w-full object-cover"/>
             ${video.others.posted_date.length === 0 ? "" : `<span class="absolute right-2 bottom-2 bg-black text-white text-sm rounded-md px-3 py-2">${time(video.others.posted_date)}</span>`}
@@ -211,7 +210,7 @@ const sorting = (video) => {
             </div>
         </div>
         </div>`;
-        videoContainer.appendChild(card);
+    videoContainer.appendChild(card);
 };
 sort.addEventListener("click", async () => {
     const response = await fetch('https://openapi.programming-hero.com/api/phero-tube/videos');
