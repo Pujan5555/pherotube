@@ -59,9 +59,9 @@ const DisplayCategories = (data) => {
     all.innerText = "All";
     videoCategory.appendChild(all);
     all.addEventListener("click", () => {
-        videoContainer.innerHTML = "";
         all.classList.remove("bg-slate-200");
         all.classList.add("active");
+        videoContainer.innerHTML = "";
         LoadVideos();
     });
     data.forEach((element) => {
